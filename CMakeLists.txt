@@ -49,15 +49,15 @@ include(cmake/FuzzTestFlagSetup.cmake)
 
 fuzztest_setup_fuzzing_flags()
 
-include(cmake/BuildDependencies.cmake)
+include(cmake/VcpkgDependencies.cmake)
 include(cmake/FuzzTestHelpers.cmake)
 include(cmake/CompatibilityModeLinkLibFuzzer.cmake)
 
 if (FUZZTEST_BUILD_TESTING)
   enable_testing()
 
-  set(protobuf_PROTOC_EXE "${protobuf_BINARY_DIR}/protoc")
-  include(${protobuf_SOURCE_DIR}/cmake/protobuf-generate.cmake)
+  # Find protoc executable for vcpkg-installed protobuf
+  find_program(protobuf_PROTOC_EXE protoc REQUIRED)
 endif ()
 
 add_subdirectory(common)

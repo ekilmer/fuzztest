@@ -34,7 +34,7 @@ target_link_libraries(
   fuzztest_test_binary_util
   fuzztest_type_support
   fuzztest_temp_dir
-  re2
+  re2::re2
   absl::flat_hash_map
   absl::strings
   absl::str_format
@@ -63,7 +63,7 @@ target_link_libraries(
   PUBLIC
   fuzztest_common_logging
   fuzztest_subprocess
-  re2
+  re2::re2
   absl::flat_hash_map
   absl::flags
   absl::flags_parse

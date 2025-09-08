@@ -113,7 +113,7 @@ if (FUZZTEST_BUILD_FLATBUFFERS)
       absl::str_format
       absl::strings
       absl::synchronization
-      flatbuffers
+      flatbuffers::flatbuffers
       fuzztest::any
       fuzztest::domain_core
       fuzztest::logging

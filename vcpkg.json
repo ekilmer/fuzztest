@@ -1,0 +1,32 @@
+{
+  "name": "fuzztest",
+  "version": "1.0.0",
+  "description": "FuzzTest - A C++ testing framework for writing and executing fuzz tests",
+  "dependencies": [
+    {
+      "name": "abseil",
+      "features": ["cxx17"]
+    },
+    "re2",
+    {
+      "name": "gtest",
+      "features": ["cxx17", "absl"]
+    },
+    "antlr4"
+  ],
+  "features": {
+    "testing": {
+      "description": "Enable testing dependencies",
+      "dependencies": [
+        "protobuf",
+        "nlohmann-json"
+      ]
+    },
+    "flatbuffers": {
+      "description": "Enable FlatBuffers support",
+      "dependencies": [
+        "flatbuffers"
+      ]
+    }
+  }
+}

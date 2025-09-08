@@ -29,7 +29,7 @@ if (FUZZTEST_BUILD_FLATBUFFERS)
       absl::random_bit_gen_ref
       absl::random_random
       absl::strings
-      flatbuffers
+      flatbuffers::flatbuffers
       fuzztest::domain
       fuzztest::domain_testing
       fuzztest::flatbuffers

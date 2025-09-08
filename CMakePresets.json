@@ -1,0 +1,107 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "hidden": true,
+      "displayName": "VCPKG Config",
+      "description": "Configure with vcpkg",
+      "binaryDir": "out/build/${presetName}",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "VCPKG_OVERLAY_PORTS": "${sourceDir}/vcpkg-overlays/ports",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg-overlays/triplets",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/clang_mold_toolchain.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-mold",
+        "VCPKG_HOST_TRIPLET": "x64-linux-mold"
+      },
+      "environment": {
+        "VCPKG_ROOT": "${sourceParentDir}/vcpkg",
+        "VCPKG_HOST_TRIPLET": "x64-linux-mold"
+      }
+    },
+    {
+      "name": "default",
+      "inherits": ["vcpkg"],
+      "displayName": "Default Config",
+      "generator": "Ninja",
+      "description": "Default build using vcpkg",
+      "binaryDir": "out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": ["vcpkg"],
+      "generator": "Ninja",
+      "displayName": "Debug Config",
+      "description": "Debug build using vcpkg",
+      "binaryDir": "out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "fuzzing",
+      "inherits": ["vcpkg"],
+      "generator": "Ninja",
+      "displayName": "Fuzzing Config",
+      "description": "Build with fuzzing mode enabled using vcpkg",
+      "binaryDir": "out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "FUZZTEST_BUILD_TESTING": "OFF",
+        "FUZZTEST_BUILD_FLATBUFFERS": "OFF",
+        "FUZZTEST_FUZZING_MODE": "ON"
+      }
+    },
+    {
+      "name": "full-features",
+      "inherits": ["vcpkg"],
+      "generator": "Ninja",
+      "displayName": "Full Features Config",
+      "description": "Build with all features enabled using vcpkg",
+      "binaryDir": "out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "ON",
+        "FUZZTEST_BUILD_TESTING": "ON",
+        "FUZZTEST_BUILD_FLATBUFFERS": "ON",
+        "VCPKG_MANIFEST_FEATURES": "testing;flatbuffers"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "fuzzing",
+      "configurePreset": "fuzzing"
+    },
+    {
+      "name": "full-features",
+      "configurePreset": "full-features"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "full-features",
+      "configurePreset": "full-features",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

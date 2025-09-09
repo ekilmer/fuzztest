@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO google/re2
     REF ${VERSION}
-    SHA512 3776383355ccfdec85e0cdfb3ce980c6ecb3c336d603dd34c0a547c7c06a6243947a13cb352372335edac12d4f28cf1b7a51d034f5b34db3e46cbcac5e3f7479
+    SHA512 bb75832ecb1d5e727331d9735b556da0778519947dc71a9540aed1b5a9bd01e0de0b35c10ea2a1e80f2fdeff73508f6cb9bc7c6c10f01b7f951121aa3a8b8e4f
     HEAD_REF master
 )
 
@@ -15,17 +15,20 @@ vcpkg_cmake_configure(
 )
 
 vcpkg_cmake_install()
-# Copy all header files from re2/ to include/re2/
-file(GLOB HEADER_FILES "${SOURCE_PATH}/re2/*.h")
-foreach(HEADER_FILE IN LISTS HEADER_FILES)
-    file(COPY "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/re2")
-endforeach()
 
-file(GLOB HEADER_FILES "${SOURCE_PATH}/util/*.h")
-file(MAKE_DIRECTORY "${CURRENT_PACKAGES_DIR}/include/util")
-foreach(HEADER_FILE IN LISTS HEADER_FILES)
-    file(COPY "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/util")
-endforeach()
+if("internal-headers" IN_LIST FEATURES)
+    # Copy internal header files from re2/ to include/re2/
+    file(GLOB HEADER_FILES "${SOURCE_PATH}/re2/*.h")
+    foreach(HEADER_FILE IN LISTS HEADER_FILES)
+        file(COPY "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/re2")
+    endforeach()
+
+    file(GLOB HEADER_FILES "${SOURCE_PATH}/util/*.h")
+    file(MAKE_DIRECTORY "${CURRENT_PACKAGES_DIR}/include/util")
+    foreach(HEADER_FILE IN LISTS HEADER_FILES)
+        file(COPY "${HEADER_FILE}" DESTINATION "${CURRENT_PACKAGES_DIR}/include/util")
+    endforeach()
+endif()
 
 vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/${PORT}")

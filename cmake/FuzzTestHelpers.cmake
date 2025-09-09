@@ -171,6 +171,18 @@ function(fuzztest_cc_library)
 
     add_library(fuzztest::${FUZZTEST_CC_LIB_NAME} ALIAS ${_NAME})
 
+  if(NOT CMAKE_SKIP_INSTALL_RULES)
+    set_property(
+      TARGET ${_NAME}
+      PROPERTY EXPORT_NAME ${FUZZTEST_CC_LIB_NAME}
+    )
+    install(
+      TARGETS ${_NAME}
+      EXPORT fuzztestTargets
+      INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    )
+  endif()
+
 endfunction()
 
 # fuzztest_cc_test()
@@ -337,6 +349,14 @@ function(fuzztest_proto_library)
   )
 
   add_library(fuzztest::${FUZZTEST_PROTO_LIB_NAME} ALIAS ${_NAME})
+
+  if(NOT CMAKE_SKIP_INSTALL_RULES)
+    install(
+      TARGETS ${_NAME}
+      EXPORT fuzztestTargets
+      INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    )
+  endif()
 
 endfunction()
 

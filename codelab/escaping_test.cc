@@ -48,20 +48,20 @@ TEST(EscapingTest, UnescapingReplacesEscapeSequences) {
 
 // Comment out the following fuzz tests:
 
-// void UnescapingEscapedStringGivesOriginal(std::string_view s) {
-//   EXPECT_EQ(s, Unescape(Escape(s)));
-// }
-// FUZZ_TEST(EscapingTest, UnescapingEscapedStringGivesOriginal);
+void UnescapingEscapedStringGivesOriginal(std::string_view s) {
+  EXPECT_EQ(s, Unescape(Escape(s)));
+}
+FUZZ_TEST(EscapingTest, UnescapingEscapedStringGivesOriginal);
 
-// void EscapingAStringNeverTriggersUndefinedBehavior(std::string_view s) {
-//   Escape(s);
-// }
-// FUZZ_TEST(EscapingTest, EscapingAStringNeverTriggersUndefinedBehavior);
+void EscapingAStringNeverTriggersUndefinedBehavior(std::string_view s) {
+  Escape(s);
+}
+FUZZ_TEST(EscapingTest, EscapingAStringNeverTriggersUndefinedBehavior);
 
-// void UnescapingAStringNeverTriggersUndefinedBehavior(std::string_view s) {
-//   Unescape(s);
-// }
-// FUZZ_TEST(EscapingTest, UnescapingAStringNeverTriggersUndefinedBehavior);
+void UnescapingAStringNeverTriggersUndefinedBehavior(std::string_view s) {
+  Unescape(s);
+}
+FUZZ_TEST(EscapingTest, UnescapingAStringNeverTriggersUndefinedBehavior);
 
 }  // namespace
 }  // namespace codelab

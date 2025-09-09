@@ -23,7 +23,8 @@
     "absl": {
       "description": "Enable Abseil support",
       "dependencies": [
-        "abseil"
+        "abseil",
+        "re2"
       ]
     }
   }

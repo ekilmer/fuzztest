@@ -7,7 +7,10 @@
       "name": "abseil",
       "features": ["cxx17"]
     },
-    "re2",
+    {
+      "name": "re2",
+      "features": ["internal-headers"]
+    },
     {
       "name": "gtest",
       "features": ["cxx17", "absl"]

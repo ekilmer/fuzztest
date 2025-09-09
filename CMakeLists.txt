@@ -44,6 +44,10 @@ if (NOT FUZZTEST_COMPATIBILITY_MODE STREQUAL "" AND
   message (FATAL_ERROR "Compatibility mode is only supported for libfuzzer")
 endif ()
 
+if(NOT CMAKE_SKIP_INSTALL_RULES)
+    include(GNUInstallDirs)
+endif()
+
 include(cmake/AddFuzzTest.cmake)
 include(cmake/FuzzTestFlagSetup.cmake)
 
@@ -74,3 +78,47 @@ if (FUZZTEST_BUILD_TESTING)
   add_subdirectory(e2e_tests)
   add_subdirectory(e2e_tests/testdata)
 endif ()
+
+if(NOT CMAKE_SKIP_INSTALL_RULES)
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/fuzztest"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    FILES_MATCHING PATTERN "*.h"
+  )
+  install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/common"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    FILES_MATCHING PATTERN "*.h"
+  )
+
+  set(
+    fuzztest_INSTALL_CMAKEDIR "${CMAKE_INSTALL_DATADIR}/fuzztest"
+    CACHE STRING "CMake package config location relative to the install prefix"
+  )
+  set_property(CACHE fuzztest_INSTALL_CMAKEDIR PROPERTY TYPE PATH)
+  mark_as_advanced(fuzztest_INSTALL_CMAKEDIR)
+
+  configure_file(
+    cmake/fuzztest-install-config.cmake.in
+    fuzztest-install-config.cmake
+    @ONLY
+  )
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/fuzztest-install-config.cmake
+    DESTINATION "${fuzztest_INSTALL_CMAKEDIR}"
+    RENAME "fuzztestConfig.cmake"
+  )
+
+  install(
+    EXPORT fuzztestTargets
+    NAMESPACE fuzztest::
+    DESTINATION "${fuzztest_INSTALL_CMAKEDIR}"
+  )
+
+  install(
+    FILES
+      cmake/FuzzTestFlagSetup.cmake
+      cmake/AddFuzzTest.cmake
+    DESTINATION "${fuzztest_INSTALL_CMAKEDIR}"
+  )
+endif()

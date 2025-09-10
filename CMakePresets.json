@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 10,
   "cmakeMinimumRequired": {
     "major": 3,
     "minor": 19,
@@ -16,13 +16,12 @@
       "cacheVariables": {
         "VCPKG_OVERLAY_PORTS": "${sourceDir}/vcpkg-overlays/ports",
         "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg-overlays/triplets",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/clang_mold_toolchain.cmake",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-mold",
-        "VCPKG_HOST_TRIPLET": "x64-linux-mold"
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/clang_mold_toolchain.cmake",
+        "VCPKG_HOST_TRIPLET": "x64-linux-release"
       },
       "environment": {
         "VCPKG_ROOT": "${sourceParentDir}/vcpkg",
-        "VCPKG_HOST_TRIPLET": "x64-linux-mold"
+        "VCPKG_HOST_TRIPLET": "x64-linux-release"
       }
     },
     {
@@ -34,26 +33,35 @@
       "binaryDir": "out/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "BUILD_TESTING": "ON",
         "FUZZTEST_BUILD_TESTING": "ON",
         "FUZZTEST_BUILD_FLATBUFFERS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-mold",
         "VCPKG_MANIFEST_FEATURES": "testing;flatbuffers"
       }
     },
     {
-      "name": "fuzzing",
-      "inherits": ["vcpkg"],
+      "name": "fuzztest",
+      "inherits": ["default-clang"],
       "generator": "Ninja",
-      "displayName": "Fuzzing Config",
-      "description": "Build with fuzzing mode enabled using vcpkg",
+      "displayName": "Fuzztest Config",
+      "description": "Build with fuzzing mode (fuzztest)enabled using vcpkg",
       "binaryDir": "out/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "BUILD_TESTING": "ON",
-        "FUZZTEST_BUILD_TESTING": "ON",
-        "FUZZTEST_BUILD_FLATBUFFERS": "ON",
+        "CMAKE_BUILD_TYPE": null,
         "FUZZTEST_FUZZING_MODE": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-fuzztest",
         "VCPKG_MANIFEST_FEATURES": "testing;flatbuffers"
+      }
+    },
+    {
+      "name": "libfuzzer",
+      "inherits": ["fuzztest"],
+      "cacheVariables": {
+        "FUZZTEST_FUZZING_MODE": null,
+        "FUZZTEST_COMPATIBILITY_MODE": "libfuzzer",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-libfuzzer"
       }
     }
   ],
@@ -63,8 +71,12 @@
       "configurePreset": "default-clang"
     },
     {
-      "name": "fuzzing",
-      "configurePreset": "fuzzing"
+      "name": "fuzztest",
+      "configurePreset": "fuzztest"
+    },
+    {
+      "name": "libfuzzer",
+      "configurePreset": "libfuzzer"
     }
   ],
   "testPresets": [
@@ -76,11 +88,77 @@
       }
     },
     {
-      "name": "fuzzing",
-      "configurePreset": "fuzzing",
+      "name": "fuzztest",
+      "configurePreset": "fuzztest",
       "output": {
         "outputOnFailure": true
       }
+    },
+    {
+      "name": "libfuzzer",
+      "configurePreset": "libfuzzer",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "default-clang",
+      "displayName": "Default Workflow",
+      "description": "Complete workflow: configure, build, and test with default Clang settings",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default-clang"
+        },
+        {
+          "type": "build",
+          "name": "default-clang"
+        },
+        {
+          "type": "test",
+          "name": "default-clang"
+        }
+      ]
+    },
+    {
+      "name": "fuzztest",
+      "displayName": "Fuzztest Workflow",
+      "description": "Complete workflow: configure, build, and test with fuzztest enabled",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "fuzztest"
+        },
+        {
+          "type": "build",
+          "name": "fuzztest"
+        },
+        {
+          "type": "test",
+          "name": "fuzztest"
+        }
+      ]
+    },
+    {
+      "name": "libfuzzer",
+      "displayName": "LibFuzzer Workflow",
+      "description": "Complete workflow: configure, build, and test with libfuzzer compatibility",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "libfuzzer"
+        },
+        {
+          "type": "build",
+          "name": "libfuzzer"
+        },
+        {
+          "type": "test",
+          "name": "libfuzzer"
+        }
+      ]
     }
   ]
 }
